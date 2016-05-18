@@ -3,21 +3,21 @@
 
 //#include "Header.h"
 #include "Display_Main.h"
+#include "Interface.h"
 
 class _Init
 {
 	friend class _Display_Main;
 private:
 
-	_Inheritance_Display *Display_wsk;
-	_Display_Main Display_Main;
+	//_Inheritance_Display *Display_wsk;
+	//_Display_Main Display_Main;
 	SDL_GLContext gContext;
 
 	SDL_Window  * window;
 	SDL_Surface * gScreenSurface;
 	SDL_Surface * gCurrentSurface;
 	SDL_Surface * gDefaultSurface;
-	SDL_Event ev;
 
 	
 
@@ -203,7 +203,7 @@ public:
 	_Init(std::string window_name)
 	{
 		bool success = true;
-		Display_wsk = &Display_Main;
+//		Display_wsk = &Display_Main;
 
 		//Initialize SDL
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
@@ -315,28 +315,12 @@ public:
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
-		//InitDataText = (char**)malloc(sizeof(char*)*DTTotal);
-		//for (i = 0; i < DTTotal; i++)
-		//	InitDataText[i] = (char*)malloc(sizeof(char)* 5);
-
-		//int j;
-
-		//for (i = 0; i < DTTotal; i++)
-		//{
-		//	for (j = 0; j < 5; j++)
-		//		InitDataText[i][j] = 0;
-		//}
-
-
-
-
-
 	}
 
 	_Init()
 	{
 		bool success = true;
-		Display_wsk = &Display_Main;
+//		Display_wsk = &Display_Main;
 
 		//Initialize SDL
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
@@ -469,15 +453,61 @@ public:
 
 	void Window()
 	{
+
 		Timer = SDL_GetTicks();
 
-		Display_Main.Load_Media();
+		_Interface Interface;
 
 		while (!quit)
 		{
 			StartTimer = SDL_GetTicks();
 
-			Display_wsk->Display();
+			Interface.Theatre();
+
+			SDL_GL_SwapWindow(window);
+
+			Events();
+
+
+
+			tempfps++;
+
+			if (StartTimer - Timer >= 1000)
+			{
+				Timer = SDL_GetTicks();
+				std::cout << tempfps << "\n";
+				tempfps = 0;
+			}
+
+			if (1000 / FPS > SDL_GetTicks() - StartTimer)
+			{
+				SDL_Delay(1000 / FPS - (SDL_GetTicks() - StartTimer));
+			}
+
+
+
+
+		}
+
+		this->~_Init();
+
+	}
+
+	void Window(_Enum_Interface e_)
+	{
+
+		Timer = SDL_GetTicks();
+
+		_Interface Interface;
+
+		Actual_Interface.Enum_Interface = e_;
+
+		while (!quit)
+		{
+			StartTimer = SDL_GetTicks();
+
+			Interface.Theatre();
+
 			SDL_GL_SwapWindow(window);
 
 			Events();
@@ -506,7 +536,7 @@ public:
 		this->~_Init();
 
 	}
-};
+}; 
 
 
 

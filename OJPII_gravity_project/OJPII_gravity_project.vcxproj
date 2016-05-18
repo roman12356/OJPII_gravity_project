@@ -73,10 +73,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Display_Main.h" />
+    <ClInclude Include="Display_Water.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="Inheritance_Display.h" />
     <ClInclude Include="Init.h" />
+    <ClInclude Include="Interface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
