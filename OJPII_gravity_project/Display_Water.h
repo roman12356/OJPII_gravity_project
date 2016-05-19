@@ -22,49 +22,7 @@ private:
 	SDL_Color textColor;
 
 
-public:
-
-	_Display_Water()
-	{
-		std::cout << "Constructor _Display_Water()\n";
-		if (Load_Media())
-		{
-			std::cout << "Load media success\n";
-		}
-
-		textColor = { 0, 0, 0 };
-	}
-
-	~_Display_Water()
-	{
-		glDeleteTextures(E_DISP_MAIN_TOTAL, Texture);
-	}
-
-	bool Load_Media()
-	{
-		bool success = true;
-		if (!(LoadGLTextures(&Texture[E_DISP_WATER_SURFACE], "bmp/interface2.bmp")))
-		{
-			std::cout << "Display_Water can't load E_DISP_WATER_SURFACE...\n";
-			success = false;
-		}
-
-		if (!(LoadGLTextures(&Texture[E_DISP_WATER_BACK], "png/next.png")))
-		{
-			std::cout << "Display_Water can't load E_DISP_WATER_BACK...\n";
-			success = false;
-		}
-
-		if (!(LoadGLTextures(&Texture[E_DISP_WATER_GLASS], "png/glass.png")))
-		{
-			std::cout << "Display_Water can't load E_DISP_WATER_GLASS...\n";
-			success = false;
-		}
-
-		return success;
-	}
-
-	void Theatre()
+	void Menu()
 	{
 		glClearColor(136.0f / 255.0f, 0.0f, 21.0f / 255.0f, 1.0f);
 
@@ -146,22 +104,77 @@ public:
 		//angle = 0;
 
 
-		Events();
+		//Events();
+	}
+
+
+public:
+
+	_Display_Water()
+	{
+		std::cout << "Constructor _Display_Water()\n";
+		if (Load_Media())
+		{
+			std::cout << "Load media success\n";
+		}
+
+		textColor = { 0, 0, 0 };
+	}
+
+	~_Display_Water()
+	{
+		glDeleteTextures(E_DISP_MAIN_TOTAL, Texture);
+	}
+
+	bool Load_Media()
+	{
+		bool success = true;
+		if (!(LoadGLTextures(&Texture[E_DISP_WATER_SURFACE], "bmp/interface2.bmp")))
+		{
+			std::cout << "Display_Water can't load E_DISP_WATER_SURFACE...\n";
+			success = false;
+		}
+
+		if (!(LoadGLTextures(&Texture[E_DISP_WATER_BACK], "png/next.png")))
+		{
+			std::cout << "Display_Water can't load E_DISP_WATER_BACK...\n";
+			success = false;
+		}
+
+		if (!(LoadGLTextures(&Texture[E_DISP_WATER_GLASS], "png/glass.png")))
+		{
+			std::cout << "Display_Water can't load E_DISP_WATER_GLASS...\n";
+			success = false;
+		}
+
+		return success;
+	}
+
+	void Theatre()
+	{
+		switch (Actual_Interface.Enum_Interface)
+		{
+		case E_INTER_WATER_MENU:
+			Menu();
+			break;
+		default:
+			Actual_Interface.Enum_Interface = E_INTER_MAIN;
+			std::cout << "Error in Actual_Interface inside Display Water\n";
+			break;
+		}
 	}
 
 	void Events()
 	{
-		while (SDL_PollEvent(&ev) != 0)
-		{
+		/*This function is to be called in main event function in Init.Window()*/
+		//while (SDL_PollEvent(&ev) != 0)
+
 			if (ev.type == SDL_KEYDOWN)
 			{
 				std::cout << "Keydown\n";
 			}
 
 
-
-
-		}
 	}
 };
 

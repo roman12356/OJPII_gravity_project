@@ -7,6 +7,7 @@ class _Inheritance_Display
 {
 	friend class Init;
 protected:
+	int tempint = 0;
 	int mousex, mousey;
 	bool ready = 0;
 	bool Invert_Image(SDL_Surface* image)
@@ -301,7 +302,10 @@ public:
 		return false;
 	}
 	virtual void Theatre(){};
-	virtual void Events(){};
+	virtual void Events()
+	{
+		std::cout << "Inheritance_Display events " << tempint++ << "\n";
+	};
 	virtual void Mouse_Events(){};
 
 

@@ -55,7 +55,7 @@ public:
 		return success;
 	}
 
-	void Mouse_Events()
+	void Events()
 	{
 		if (ev.type == SDL_MOUSEBUTTONDOWN && ev.button.button == SDL_BUTTON_LEFT)
 		{
@@ -73,6 +73,13 @@ public:
 				Actual_Interface.Enum_Interface = E_INTER_THROW_MENU;
 			}
 		}
+
+		if (ev.type == SDL_KEYDOWN)
+		{
+			std::cout << "Keydown main\n";
+		}
+
+		std::cout << "Display main event...\n";
 	}
 
 
@@ -118,9 +125,9 @@ public:
 		glDisable(GL_TEXTURE_2D);
 
 
-		Mouse_Events();
+		//Mouse_Events();
 
-		Events();
+		//Events();
 	}
 
 	

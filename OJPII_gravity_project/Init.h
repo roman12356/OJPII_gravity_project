@@ -10,7 +10,9 @@ class _Init
 	friend class _Display_Main;
 private:
 
-	//_Inheritance_Display *Display_wsk;
+	_Actual_Interface Last_Interface;
+
+	_Inheritance_Display *Display_wsk;
 	//_Display_Main Display_Main;
 	SDL_GLContext gContext;
 
@@ -28,7 +30,7 @@ private:
 
 	int tempfps;
 
-	void Events()
+	void Events(_Inheritance_Display *Display_wsk)
 	{
 		while (SDL_PollEvent(&ev) != 0)
 		{
@@ -115,7 +117,7 @@ private:
 						break;
 					}
 				}
-				break;*/
+				break;
 
 			case SDL_TEXTINPUT:
 				/*if (InterfaceType == I_WATER)
@@ -196,7 +198,11 @@ private:
 			default:
 				break;
 			}
+
+			Display_wsk->Events();
 		}
+
+			
 	}
 
 public:
@@ -458,16 +464,41 @@ public:
 
 		_Interface Interface;
 
+		Last_Interface.Enum_Interface = E_INTER_TOTAL;
+		//Display_wsk = &Interface.Display_Main;
+
 		while (!quit)
 		{
 			StartTimer = SDL_GetTicks();
 
-			Interface.Theatre();
+			Interface.Theatre(Display_wsk);
+
+			if (Last_Interface.Enum_Interface != Actual_Interface.Enum_Interface)
+			{
+
+				switch (Actual_Interface.Enum_Interface)
+				{
+				case E_INTER_MAIN:
+					Display_wsk = &Interface.Display_Main;
+					break;
+
+				case E_INTER_WATER_COUNT || E_INTER_WATER_MENU || E_INTER_WATER_THEATRE:
+					Display_wsk = &Interface.Display_Water;
+					break;
+
+				default:
+					std::cout << "Not available (Init.Window() Switch)...\n";
+					break;
+				}
+
+				Last_Interface.Enum_Interface = Actual_Interface.Enum_Interface;
+				std::cout << "Last Interface\n";
+
+			}
+			//Display_wsk->Events();
+			Events(Display_wsk);
 
 			SDL_GL_SwapWindow(window);
-
-			Events();
-
 
 
 			tempfps++;
@@ -495,46 +526,9 @@ public:
 
 	void Window(_Enum_Interface e_)
 	{
-
-		Timer = SDL_GetTicks();
-
-		_Interface Interface;
-
 		Actual_Interface.Enum_Interface = e_;
 
-		while (!quit)
-		{
-			StartTimer = SDL_GetTicks();
-
-			Interface.Theatre();
-
-			SDL_GL_SwapWindow(window);
-
-			Events();
-
-
-
-			tempfps++;
-
-			if (StartTimer - Timer >= 1000)
-			{
-				Timer = SDL_GetTicks();
-				std::cout << tempfps << "\n";
-				tempfps = 0;
-			}
-
-			if (1000 / FPS > SDL_GetTicks() - StartTimer)
-			{
-				SDL_Delay(1000 / FPS - (SDL_GetTicks() - StartTimer));
-			}
-
-
-
-			
-		}
-
-		this->~_Init();
-
+		Window();
 	}
 }; 
 

@@ -41,10 +41,10 @@ class _Actual_Interface
 private:
 	_Enum_Interface Enum_Interface;
 
-	void Set_Interface(_Enum_Interface e_)
-	{
-		Enum_Interface = e_;
-	}
+	//void Set_Interface(_Enum_Interface e_)
+	//{
+	//	Enum_Interface = e_;
+	//}
 
 public:
 
