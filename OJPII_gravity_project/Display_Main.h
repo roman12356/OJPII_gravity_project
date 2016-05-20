@@ -63,23 +63,20 @@ public:
 
 			if (CheckButton(&Button_Main1, mousex, mousey))
 			{
-				std::cout << "Display main button 1\n";
 				Actual_Interface.Enum_Interface = E_INTER_WATER_MENU;
 			}
 
 			if (CheckButton(&Button_Main2, mousex, mousey))
 			{
-				std::cout << "Display main button 2\n";
 				Actual_Interface.Enum_Interface = E_INTER_THROW_MENU;
 			}
 		}
 
 		if (ev.type == SDL_KEYDOWN)
 		{
-			std::cout << "Keydown main\n";
+			//std::cout << "Keydown main\n";
 		}
 
-		std::cout << "Display main event...\n";
 	}
 
 

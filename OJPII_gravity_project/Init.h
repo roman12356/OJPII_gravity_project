@@ -13,9 +13,8 @@ private:
 	_Actual_Interface Last_Interface;
 
 	_Inheritance_Display *Display_wsk;
-	//_Display_Main Display_Main;
-	SDL_GLContext gContext;
 
+	SDL_GLContext gContext;
 	SDL_Window  * window;
 	SDL_Surface * gScreenSurface;
 	SDL_Surface * gCurrentSurface;
@@ -26,8 +25,6 @@ private:
 	Uint32 Timer;
 	bool quit;
 	Uint32 StartTimer;
-	int FPS = 30;
-
 	int tempfps;
 
 	void Events(_Inheritance_Display *Display_wsk)
@@ -465,13 +462,12 @@ public:
 		_Interface Interface;
 
 		Last_Interface.Enum_Interface = E_INTER_TOTAL;
-		//Display_wsk = &Interface.Display_Main;
 
 		while (!quit)
 		{
 			StartTimer = SDL_GetTicks();
 
-			Interface.Theatre(Display_wsk);
+			Interface.Theatre();
 
 			if (Last_Interface.Enum_Interface != Actual_Interface.Enum_Interface)
 			{
@@ -482,7 +478,7 @@ public:
 					Display_wsk = &Interface.Display_Main;
 					break;
 
-				case E_INTER_WATER_COUNT || E_INTER_WATER_MENU || E_INTER_WATER_THEATRE:
+				case E_INTER_WATER_COUNT: case E_INTER_WATER_MENU: case E_INTER_WATER_THEATRE:
 					Display_wsk = &Interface.Display_Water;
 					break;
 
@@ -495,7 +491,6 @@ public:
 				std::cout << "Last Interface\n";
 
 			}
-			//Display_wsk->Events();
 			Events(Display_wsk);
 
 			SDL_GL_SwapWindow(window);
@@ -512,7 +507,7 @@ public:
 
 			if (1000 / FPS > SDL_GetTicks() - StartTimer)
 			{
-				SDL_Delay(1000 / FPS - (SDL_GetTicks() - StartTimer));
+				SDL_Delay(1000 / (FPS) - (SDL_GetTicks() - StartTimer));
 			}
 
 

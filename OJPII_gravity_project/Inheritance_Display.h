@@ -10,6 +10,10 @@ protected:
 	int tempint = 0;
 	int mousex, mousey;
 	bool ready = 0;
+	int Active_Field;
+	char buffer[4];
+
+
 	bool Invert_Image(SDL_Surface* image)
 	{
 
@@ -124,6 +128,9 @@ protected:
 		}
 	}_Str_TextTexture;
 
+	Button_S Button_Back = { 100, 400, 100, 100 };
+	Button_S Button_Next = { 600, 400, 100, 100 };
+
 
 public:
 	bool LoadGLTextures(GLuint *texture, std::string filename)
@@ -225,7 +232,7 @@ public:
 
 		SDL_Surface* TextSDL = NULL;
 
-		if (text[0] == '\0')
+		if (text.length() == 0)
 		{
 			text = " ";
 		}
@@ -291,15 +298,10 @@ public:
 	}
 
 
-
-
-
-
-	virtual bool Count()
+	virtual void Count()
 	{
 		//Actual_Interface.
 		std::cout << "Virtual bool Count from Inheritance_Display...\n";
-		return false;
 	}
 	virtual void Theatre(){};
 	virtual void Events()

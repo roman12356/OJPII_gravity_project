@@ -14,24 +14,22 @@ private:
 	_Display_Water Display_Water;
 
 public:
-	void Theatre(_Inheritance_Display *Display_wsk)
+	void Theatre()
 	{
 		switch (Actual_Interface.Get_Interface())
 		{
 		case E_INTER_MAIN:
 			Display_Main.Theatre();
-			//wsk = &(this->Display_Main);
-			//Display_wsk = wsk;
-			//Display_wsk->Events();
-
 			break;
 
-		case E_INTER_WATER_MENU:
+		case E_INTER_WATER_MENU: case E_INTER_WATER_COUNT: case E_INTER_WATER_THEATRE:
 			 Display_Water.Theatre();
-			 //Display_wsk = &(this->Display_Water);
-			//std::cout << "Display_Water...\n";
-			//Actual_Interface.Enum_Interface = E_INTER_MAIN;
 			break;
+
+		//case  E_INTER_WATER_COUNT, E_INTER_WATER_THEATRE: // z niewiadomych przyczyn nie dzia³a case E_INTER_WATER_MENU || E_INTER_WATER_COUNT:
+		//	Display_Water.Theatre();
+		//	break;
+
 
 		default:
 			std::cout << "Nothing yet...\n";
