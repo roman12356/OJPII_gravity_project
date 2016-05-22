@@ -22,6 +22,6 @@ int main(int argc, char * argv[])
 	
 	//Window.~Init();
 	SDL_Quit();
-	system("PAUSE");
+	//system("PAUSE");
 	return 0;
 }

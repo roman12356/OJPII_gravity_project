@@ -38,6 +38,7 @@ class _Actual_Interface
 	friend class _Inheritance_Display;
 	friend class _Display_Main;
 	friend class _Display_Water;
+	friend class _Display_Throw;
 	friend class _Init;// Window(_Enum_Interface e_);
 private:
 	_Enum_Interface Enum_Interface;
@@ -67,6 +68,7 @@ _Actual_Interface Actual_Interface;
 #include "Inheritance_Display.h"
 #include "Display_Main.h"
 #include "Display_Water.h"
+#include "Display_Throw.h"
 #include "Interface.h"
 
 

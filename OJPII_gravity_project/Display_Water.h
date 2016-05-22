@@ -17,6 +17,7 @@ enum _E_DISP_WATER
 enum _E_DISP_WATER_ADD
 {
 	E_DISP_WATER_AD_CM,
+	//E_DISP_WATER_AD_CM2,
 	E_DISP_WATER_AD_POWROT,
 	E_DISP_WATER_AD_SLOWMO_TRUE,
 	E_DISP_WATER_AD_SLOWMO_FALSE,
@@ -28,6 +29,7 @@ enum _E_DISP_WATER_ADD
 enum _E_ACTIVE_FIELD_WATER
 {
 	E_ACTIVE_FIELD_W_1,
+	E_ACTIVE_FIELD_W_2,
 	E_ACTIVE_FIELD_W_TOTAL
 };
 
@@ -39,6 +41,9 @@ private:
 	std::size_t found;
 	std::vector<double> WaterPosition;
 	std::vector<_Str_TextTexture> RangeTexture;
+	std::istringstream iss;
+
+
 	int WaterHeight;
 	float ChairHeight;
 	int WaterPositionAmount;
@@ -54,25 +59,42 @@ private:
 
 	GLuint Texture[E_DISP_WATER_TOTAL];
 	_Str_TextTexture InitDataTexture[E_DISP_WATER_AD_TOTAL];
-	SDL_Color textColor;
 
 	Button_S Button_Active_Field_Water = { 267, 145, 177, 41 };
-
-	Uint32 StartTimer = 0;
-	Uint32 Timer = 0;
+	Button_S Button_Active_Field_Water2 = { 267, 247, 177, 41 };
+	Button_S Button_Start = { 198, 101, 90, 27 };
+	Button_S Button_Slowmo = { 200, 51, 250, 26 };
+	Button_S Button_Powrot = { 32, 556, 110, 30 };
 
 	float WaterVelocity(int h)
 	{
 
-		return (float)(sqrt(2 * 9.80665 * (h) * 0.01));
+		return (float)(sqrt(2 * 9.80665 * (h)* 0.01));
 	}
 
-	double ThrowPos(float x, float speed, float angle)
+	bool Load_Media()
 	{
-		return (double)(x * tan(angle) - (9.80665 / (2 * pow(speed, 2.0) * pow(cos(angle* (M_PI / 180)), 2.0)))*pow(x, 2.0));
+		bool success = true;
+		if (!(LoadGLTextures(&Texture[E_DISP_WATER_SURFACE], "bmp/interface2.bmp")))
+		{
+			std::cout << "Display_Water can't load E_DISP_WATER_SURFACE...\n";
+			success = false;
+		}
+
+		if (!(LoadGLTextures(&Texture[E_DISP_WATER_BACK], "png/next.png")))
+		{
+			std::cout << "Display_Water can't load E_DISP_WATER_BACK...\n";
+			success = false;
+		}
+
+		if (!(LoadGLTextures(&Texture[E_DISP_WATER_GLASS], "png/glass.png")))
+		{
+			std::cout << "Display_Water can't load E_DISP_WATER_GLASS...\n";
+			success = false;
+		}
+
+		return success;
 	}
-
-
 
 	void Menu()
 	{
@@ -110,9 +132,32 @@ private:
 				Timer = SDL_GetTicks();
 			}
 		}
+		//else if (Active_Field == E_ACTIVE_FIELD_W_2)
+		//{
+		//	StartTimer = SDL_GetTicks();
 
+		//	if (StartTimer - Timer >= 1000)
+		//	{
+		//		if (InitDataText2.empty())
+		//		{
+		//			InitDataText2.push_back('|');
+		//		}
+		//		else  if (InitDataText2.back() == '|')
+		//		{
+		//			InitDataText2.pop_back();
+		//		}
+		//		else if (!(InitDataText2.back() == '|'))
+		//		{
+		//			InitDataText2.push_back('|');
+		//		}
 
+		//		Timer = SDL_GetTicks();
+		//	}
+		//}
+
+		//InitDataText2 = "asdasd";
 		InitDataTexture[E_DISP_WATER_AD_CM] = LoadFromRenderedText("fonts/arial.ttf", InitDataText.c_str(), 20, &textColor);
+		//InitDataTexture[E_DISP_WATER_AD_CM2] = LoadFromRenderedText("fonts/arial.ttf", InitDataText2.c_str(), 20, &textColor);
 
 
 		glEnable(GL_TEXTURE_2D);
@@ -161,7 +206,16 @@ private:
 		glTexCoord2f(1.0, 0.0); glVertex2f(270.0 + InitDataTexture[E_DISP_WATER_AD_CM].w, 440.0);
 		glEnd();
 
+		//glBindTexture(GL_TEXTURE_2D, InitDataTexture[E_DISP_WATER_AD_CM2].Texture);
+		//glBegin(GL_QUADS);
+		//glTexCoord2f(0.0, 0.0); glVertex2f(270.0, 340.0);
+		//glTexCoord2f(0.0, 1.0); glVertex2f(270.0, 340.0 - InitDataTexture[E_DISP_WATER_AD_CM2].h);
+		//glTexCoord2f(1.0, 1.0); glVertex2f(270.0 + InitDataTexture[E_DISP_WATER_AD_CM2].w, 340.0 - InitDataTexture[E_DISP_WATER_AD_CM2].h);
+		//glTexCoord2f(1.0, 0.0); glVertex2f(270.0 + InitDataTexture[E_DISP_WATER_AD_CM2].w, 340.0);
+		//glEnd();
+
 		glDeleteTextures(1, &InitDataTexture[E_DISP_WATER_AD_CM].Texture);
+		//glDeleteTextures(1, &InitDataTexture[E_DISP_WATER_AD_CM2].Texture);
 
 		glDisable(GL_BLEND);
 
@@ -174,13 +228,27 @@ private:
 		//Events();
 	}
 
+	void Reset()
+	{
+		xrel = 0;
+		KRscale = 1.0f;
+		SlowMotion = E_DISP_WATER_AD_SLOWMO_FALSE;
+		scaleflag = false;
+		start = false;
+		tempint = 0;
+	}
+
 	void Count()
 	{
-		std::istringstream iss(InitDataText);
+		iss.str(InitDataText);
 		iss >> WaterHeight;
+		iss.clear();
+		//iss.str(InitDataText2);
+		//iss >> ChairHeight;
 
-		ChairHeight = 2.0;
 		WaterPositionAmount = 0;
+		WaterPosition.clear();
+		ChairHeight = 2.0;
 		do
 		{
 			WaterPosition.push_back(ThrowPos((float)(WaterPositionAmount * 0.001), WaterVelocity(WaterHeight), 0));
@@ -188,28 +256,28 @@ private:
 
 		} while (WaterPosition.back() >= -ChairHeight);
 
-		std::cout << "WaterPositionAmount: " << WaterPositionAmount << "\n";
+		//std::cout << "WaterPositionAmount: " << WaterPositionAmount << "\n";
 
 
 		for (AmountOfRange = 0; AmountOfRange < WaterPositionAmount / 10 + 100; AmountOfRange += 100);
 		AmountOfRange -= 100;
 		AmountOfRange /= 100;
 
-		std::cout << "Amount of range: " << AmountOfRange << "\n";
+		//std::cout << "Amount of range: " << AmountOfRange << "\n";
 
-		std::cout << "Amount of range textures: " << RangeTexture.size() << "\n";
+		//std::cout << "Amount of range textures: " << RangeTexture.size() << "\n";
 
-
+		RangeTexture.clear();
 		std::string range;
-		for (int i = 0; i < AmountOfRange +1 ; i++)
+		for (int i = 0; i < AmountOfRange + 1; i++)
 		{
 			range = std::to_string(i);
 			RangeTexture.push_back(LoadFromRenderedText("fonts/arial.ttf", range, 20, &textColor));
 		}
 
-		RangeTexture.push_back(LoadFromRenderedText("fonts/arial.ttf", "[cm]", 20, &textColor));
+		RangeTexture.push_back(LoadFromRenderedText("fonts/arial.ttf", "[m]", 20, &textColor));
 
-		std::cout << "Amount of range textures: " << RangeTexture.size() << "\n";
+		//std::cout << "Amount of range textures: " << RangeTexture.size() << "\n";
 
 		range.erase();
 		range.append("Zasieg: ");
@@ -217,11 +285,7 @@ private:
 		range.append("[m]");
 		InitDataTexture[E_DISP_WATER_AD_RANGE] = LoadFromRenderedText("fonts/arial.ttf", range, 25, &textColor);
 
-		xrel = 0;
-		KRscale = 1.0f;
-		SlowMotion = E_DISP_WATER_AD_SLOWMO_FALSE;
-		scaleflag = false;
-		start = false;
+		Reset();
 
 	}
 
@@ -287,10 +351,10 @@ private:
 
 		glBindTexture(GL_TEXTURE_2D, InitDataTexture[E_DISP_WATER_AD_RANGE].Texture);
 		glBegin(GL_QUADS);
-		glTexCoord2f(0.0, 0.0); glVertex2f(570.0, 550.0f);
-		glTexCoord2f(0.0, 1.0); glVertex2f(570.0, 550.0f - InitDataTexture[E_DISP_WATER_AD_RANGE].h);
-		glTexCoord2f(1.0, 1.0); glVertex2f(570.0 + InitDataTexture[E_DISP_WATER_AD_RANGE].w, 550.0 - InitDataTexture[E_DISP_WATER_AD_RANGE].h);
-		glTexCoord2f(1.0, 0.0); glVertex2f(570.0 + InitDataTexture[E_DISP_WATER_AD_RANGE].w, 550.0);
+		glTexCoord2f(0.0, 0.0); glVertex2f(SCREEN_WIDTH - InitDataTexture[E_DISP_WATER_AD_RANGE].w - 30, 550.0f);
+		glTexCoord2f(0.0, 1.0); glVertex2f(SCREEN_WIDTH - InitDataTexture[E_DISP_WATER_AD_RANGE].w - 30, 550.0f - InitDataTexture[E_DISP_WATER_AD_RANGE].h);
+		glTexCoord2f(1.0, 1.0); glVertex2f(SCREEN_WIDTH - 30, 550.0 - InitDataTexture[E_DISP_WATER_AD_RANGE].h);
+		glTexCoord2f(1.0, 0.0); glVertex2f(SCREEN_WIDTH - 30, 550.0);
 		glEnd();
 
 
@@ -318,12 +382,11 @@ private:
 			{
 				tempint = WaterPositionAmount;
 			}
+		}
 
-
-			if (tempint > 3500 && tempint < WaterPositionAmount)
-			{
-				glTranslatef(350 - (int)tempint / 10, 0.0, 0.0);
-			}
+		if (tempint > 3500 && tempint < WaterPositionAmount)
+		{
+			glTranslatef(350 - (int)tempint / 10, 0.0, 0.0);
 		}
 
 		//scalling with +- and moving with mouse
@@ -478,14 +541,12 @@ private:
 		glVertex2f(200.0f, 300.0f);
 
 
-		if (start == true)
-		{
+		//Water stream
 
-			for (i = 0; i <= tempint - 2;
-				glVertex2f(200.0f + (i * 0.1f), 300.0f + WaterPosition[i] * 100),
-				glVertex2f(200.0f + ((i + 1) * 0.1f), 300.0f + WaterPosition[i + 1] * 100),
-				i++);
-		}
+		for (i = 0; i <= tempint - 2;
+			glVertex2f(200.0f + (i * 0.1f), 300.0f + WaterPosition[i] * 100),
+			glVertex2f(200.0f + ((i + 1) * 0.1f), 300.0f + WaterPosition[i + 1] * 100),
+			i++);
 
 		glEnd();
 
@@ -543,9 +604,8 @@ private:
 
 
 
-		start = true;
 
- 		glDisable(GL_BLEND);
+		glDisable(GL_BLEND);
 
 		glDisable(GL_TEXTURE_2D);
 	}
@@ -555,41 +615,110 @@ private:
 		/*This function is to be called in main event function in Init.Window()*/
 		//while (SDL_PollEvent(&ev) != 0)
 
+		//if (ev.key.keysym.mod == KMOD_CAPS)
+		//{
+		//	std::cout << "KMOD_CAPS\n";
+		//}
+
 		if (ev.type == SDL_KEYDOWN)
 		{
-			std::cout << "Keydown\n";
+			if (ev.key.keysym.sym == SDLK_RETURN)
+			{
+				if (!InitDataText.empty())
+				{
+					Actual_Interface.Enum_Interface = E_INTER_WATER_COUNT;
+				}
+			}
 		}
 
 		if (ev.type == SDL_MOUSEBUTTONDOWN && ev.button.button == SDL_BUTTON_LEFT)
 		{
 			SDL_GetMouseState(&mousex, &mousey);
 
-			if (CheckButton(&Button_Active_Field_Water, mousex, mousey))
+			switch (Actual_Interface.Enum_Interface)
 			{
-				std::cout << "Display water cm\n";
-				Active_Field = E_ACTIVE_FIELD_W_1;
-			}
-			else if (CheckButton(&Button_Next, mousex, mousey))
-			{
-				std::cout << "Button next\n";
-				Actual_Interface.Enum_Interface = E_INTER_WATER_COUNT;
-			}
-			else if (CheckButton(&Button_Back, mousex, mousey))
-			{
-				Actual_Interface.Enum_Interface = E_INTER_MAIN;
-			}
-			else
-			{
-				if (Active_Field == E_ACTIVE_FIELD_W_1)
+			case E_INTER_WATER_MENU:
+				if (CheckButton(&Button_Active_Field_Water, mousex, mousey))
 				{
-					if (!InitDataText.empty())
-					{
-						if (InitDataText.back() == '|')
-							InitDataText.pop_back();
-					}
+					//while ((found = InitDataText2.find('|')) != std::string::npos)
+					//{
+					//	InitDataText2.erase(found, 1);
+					//}
+					Active_Field = E_ACTIVE_FIELD_W_1;
 				}
-				Active_Field = E_ACTIVE_FIELD_W_TOTAL;
-				std::cout << "Display water clicked nothing\n";
+				else if (CheckButton(&Button_Active_Field_Water2, mousex, mousey))
+				{
+					while ((found = InitDataText.find('|')) != std::string::npos)
+					{
+						InitDataText.erase(found, 1);
+					}
+					Active_Field = E_ACTIVE_FIELD_W_2;
+				}
+				else if (CheckButton(&Button_Next, mousex, mousey))
+				{
+					Actual_Interface.Enum_Interface = E_INTER_WATER_COUNT;
+				}
+				else if (CheckButton(&Button_Back, mousex, mousey))
+				{
+					Actual_Interface.Enum_Interface = E_INTER_MAIN;
+				}
+				else
+				{
+					if (Active_Field == E_ACTIVE_FIELD_W_1)
+					{
+						if (!InitDataText.empty())
+						{
+							if (InitDataText.back() == '|')
+								InitDataText.pop_back();
+						}
+					}
+					//else if (Active_Field == E_ACTIVE_FIELD_W_2)
+					//{
+					//	if (!InitDataText2.empty())
+					//	{
+					//		if (InitDataText2.back() == '|')
+					//			InitDataText2.pop_back();
+					//	}
+					//}
+					Active_Field = E_ACTIVE_FIELD_W_TOTAL;
+				}
+				break;
+
+			case E_INTER_WATER_THEATRE:
+				if (CheckButton(&Button_Powrot, mousex, mousey))
+				{
+					Actual_Interface.Enum_Interface = E_INTER_WATER_MENU;
+				}
+				else
+				if (CheckButton(&Button_Start, mousex, mousey))
+				{
+					start = (start == true ? false : true);
+					if (tempint == WaterPositionAmount)
+						Reset();
+				}
+				else
+				if (CheckButton(&Button_Slowmo, mousex, mousey))
+				{
+					SlowMotion = (SlowMotion == E_DISP_WATER_AD_SLOWMO_TRUE ? E_DISP_WATER_AD_SLOWMO_FALSE : E_DISP_WATER_AD_SLOWMO_TRUE);
+				}
+
+				break;
+
+
+			default:
+				std::cout << "ERROR: Display Water event switch Actual_Interface...\n";
+				Actual_Interface.Enum_Interface = E_INTER_MAIN;
+				break;
+
+
+			}
+		}
+
+		if (ev.type == SDL_MOUSEMOTION && ev.button.button == SDL_BUTTON_LEFT && (Actual_Interface.Enum_Interface == E_INTER_WATER_THEATRE))
+		{
+			if ((xrel <= 200) && (xrel >= -(AmountOfRange * 100)))
+			{
+				xrel += ev.motion.xrel;
 			}
 		}
 
@@ -610,15 +739,39 @@ private:
 					strcpy_s(buffer, sizeof(buffer), ev.text.text);
 					if (buffer[0] > 47 && buffer[0] < 58)
 					{
-						if (InitDataText == " ")
+						if (InitDataText.empty() || InitDataText == " ")
 						{
 							InitDataText.clear();
+							if (buffer[0] > '0')
+								InitDataText.push_back(buffer[0]);
 						}
-						InitDataText.push_back(buffer[0]);
+						else
+							InitDataText.push_back(buffer[0]);
 					}
 
 				}
 			}
+			//else if (Active_Field == E_ACTIVE_FIELD_W_2)
+			//{
+
+			//	while ((found = InitDataText2.find('|')) != std::string::npos)
+			//	{
+			//		InitDataText2.erase(found, 1);
+			//	}
+			//	if (InitDataText2.length() < 3)
+			//	{
+			//		strcpy_s(buffer, sizeof(buffer), ev.text.text);
+			//		if (buffer[0] > 47 && buffer[0] < 58)
+			//		{
+			//			if (InitDataText2 == " ")
+			//			{
+			//				InitDataText2.clear();
+			//			}
+			//			InitDataText2.push_back(buffer[0]);
+			//		}
+
+			//	}
+			//}
 			break;
 
 		case SDL_KEYDOWN:
@@ -639,6 +792,20 @@ private:
 					}
 
 				}
+				//else if (Active_Field == E_ACTIVE_FIELD_W_2)
+				//{
+				//	if (!InitDataText2.empty())
+				//	{
+				//		if (InitDataText2.back() == '|')
+				//			InitDataText2.pop_back();
+
+				//		if (!InitDataText2.empty())
+				//		{
+				//			InitDataText2.pop_back();
+				//		}
+				//	}
+
+				//}
 			}
 			break;
 
@@ -654,10 +821,10 @@ public:
 
 	_Display_Water()
 	{
-		std::cout << "Constructor _Display_Water()\n";
+		//std::cout << "Constructor _Display_Water()\n";
 		if (Load_Media())
 		{
-			std::cout << "Load media success\n";
+			//std::cout << "Load media success\n";
 		}
 		textColor = { 0, 0, 0 };
 
@@ -667,39 +834,29 @@ public:
 		InitDataTexture[E_DISP_WATER_AD_SLOWMO_FALSE] = LoadFromRenderedText("fonts/arial.ttf", "Wlacz zwolnione tempo", 25, &textColor);
 		InitDataTexture[E_DISP_WATER_AD_START] = LoadFromRenderedText("fonts/arial.ttf", "START", 25, &textColor);
 
-		
 
-		Active_Field = E_ACTIVE_FIELD_W_TOTAL;
+
+		Active_Field = E_ACTIVE_FIELD_W_1;
 	}
 
 	~_Display_Water()
 	{
 		glDeleteTextures(E_DISP_WATER_TOTAL, Texture);
-		glDeleteTextures(E_DISP_WATER_AD_TOTAL, Texture);
-	}
 
-	bool Load_Media()
-	{
-		bool success = true;
-		if (!(LoadGLTextures(&Texture[E_DISP_WATER_SURFACE], "bmp/interface2.bmp")))
+		for (int i = 0; i < E_DISP_WATER_AD_TOTAL; i++)
 		{
-			std::cout << "Display_Water can't load E_DISP_WATER_SURFACE...\n";
-			success = false;
+			glDeleteTextures(1, &InitDataTexture[i].Texture);
 		}
 
-		if (!(LoadGLTextures(&Texture[E_DISP_WATER_BACK], "png/next.png")))
+		for (int i = 0; i < RangeTexture.size(); i++)
 		{
-			std::cout << "Display_Water can't load E_DISP_WATER_BACK...\n";
-			success = false;
+			glDeleteTextures(1, &RangeTexture[i].Texture);
 		}
 
-		if (!(LoadGLTextures(&Texture[E_DISP_WATER_GLASS], "png/glass.png")))
+		for (int i = 0; i < E_DISP_WATER_AD_TOTAL; i++)
 		{
-			std::cout << "Display_Water can't load E_DISP_WATER_GLASS...\n";
-			success = false;
+			glDeleteTextures(1, &InitDataTexture[i].Texture);
 		}
-
-		return success;
 	}
 
 	void Theatre()

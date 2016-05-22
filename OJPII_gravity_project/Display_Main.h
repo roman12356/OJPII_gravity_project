@@ -25,10 +25,10 @@ public:
 
 	_Display_Main()
 	{
-		std::cout << "Constructor _Display_Main()\n";
+		//std::cout << "Constructor _Display_Main()\n";
 		if (Load_Media())
 		{
-			std::cout << "Load media success\n";
+			//std::cout << "Load media success\n";
 		}
 	}
 
@@ -72,10 +72,10 @@ public:
 			}
 		}
 
-		if (ev.type == SDL_KEYDOWN)
-		{
-			//std::cout << "Keydown main\n";
-		}
+		//if (ev.type == SDL_KEYDOWN)
+		//{
+		//	//std::cout << "Keydown main\n";
+		//}
 
 	}
 

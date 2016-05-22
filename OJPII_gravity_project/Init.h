@@ -48,7 +48,9 @@ private:
 
 				if (ev.key.keysym.sym == SDLK_0)
 				{
-					std::cout << "0\n";
+					int x, y;
+					SDL_GetMouseState(&x, &y);
+					//std::cout << "x: " << x << " y: " << y << "\n";
 				}
 
 				/*if (InterfaceType == I_WATER && ev.key.keysym.sym == SDLK_RETURN  && InitDataText[DTWater][1] != '\0')
@@ -311,7 +313,7 @@ public:
 
 		if (success == true)
 		{
-			std::cout << "Init constructor good ;)\n";
+			//std::cout << "Init constructor good ;)\n";
 		}
 
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -428,7 +430,7 @@ public:
 
 		if (success == true)
 		{
-			std::cout << "Init constructor good ;)\n";
+			//std::cout << "Init constructor good ;)\n";
 		}
 
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -482,13 +484,17 @@ public:
 					Display_wsk = &Interface.Display_Water;
 					break;
 
+
+				case E_INTER_THROW_COUNT: case E_INTER_THROW_MENU: case E_INTER_THROW_THEATRE:
+					Display_wsk = &Interface.Display_Throw;
+					break;
+
 				default:
 					std::cout << "Not available (Init.Window() Switch)...\n";
 					break;
 				}
 
 				Last_Interface.Enum_Interface = Actual_Interface.Enum_Interface;
-				std::cout << "Last Interface\n";
 
 			}
 			Events(Display_wsk);
@@ -501,7 +507,7 @@ public:
 			if (StartTimer - Timer >= 1000)
 			{
 				Timer = SDL_GetTicks();
-				std::cout << tempfps << "\n";
+				//std::cout << tempfps << "\n";
 				tempfps = 0;
 			}
 

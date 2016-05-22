@@ -13,6 +13,13 @@ protected:
 	int Active_Field;
 	char buffer[4];
 
+	Uint32 StartTimer = 0;
+	Uint32 Timer = 0;
+
+	SDL_Color textColor;
+
+
+
 
 	bool Invert_Image(SDL_Surface* image)
 	{
@@ -128,6 +135,14 @@ protected:
 		}
 	}_Str_TextTexture;
 
+	double ThrowPos(float x, float speed, float angle)
+	{
+		return (double)(x * tan(angle) - (9.80665 / (2 * pow(speed, 2.0) * pow(cos(angle* (M_PI / 180)), 2.0)))*pow(x, 2.0));
+	}
+
+
+
+
 	Button_S Button_Back = { 100, 400, 100, 100 };
 	Button_S Button_Next = { 600, 400, 100, 100 };
 
@@ -152,7 +167,7 @@ public:
 			}
 			else
 			{
-				std::cout << "Loaded " << filename << "\n";
+				//std::cout << "Loaded " << filename << "\n";
 			}
 
 		}
@@ -165,7 +180,7 @@ public:
 			}
 			else
 			{
-				std::cout << "Loaded " << filename << "\n";
+				//std::cout << "Loaded " << filename << "\n";
 			}
 		}
 
@@ -195,7 +210,7 @@ public:
 			}
 			else if (filename.find(".png") != std::string::npos)
 			{
-				std::cout << "Generate png\n";
+				//std::cout << "Generate png\n";
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, TextureImage->w,
 					TextureImage->h, 0, GL_RGBA,
 					GL_UNSIGNED_BYTE, TextureImage->pixels);
@@ -298,16 +313,9 @@ public:
 	}
 
 
-	virtual void Count()
-	{
-		//Actual_Interface.
-		std::cout << "Virtual bool Count from Inheritance_Display...\n";
-	}
+	virtual void Count(){}
 	virtual void Theatre(){};
-	virtual void Events()
-	{
-		std::cout << "Inheritance_Display events " << tempint++ << "\n";
-	};
+	virtual void Events(){};
 	virtual void Mouse_Events(){};
 
 

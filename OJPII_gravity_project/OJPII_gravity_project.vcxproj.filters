@@ -41,5 +41,8 @@
     <ClInclude Include="Display_Water.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Display_Throw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

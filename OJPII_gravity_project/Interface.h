@@ -3,15 +3,16 @@
 
 //#include "Header.h"
 #include "Display_Water.h"
+#include "Display_Throw.h"
 
 
 class _Interface
 {
 	friend class _Init;
 private:
-	_Inheritance_Display *wsk;
 	_Display_Main Display_Main;
 	_Display_Water Display_Water;
+	_Display_Throw Display_Throw;
 
 public:
 	void Theatre()
@@ -26,9 +27,9 @@ public:
 			 Display_Water.Theatre();
 			break;
 
-		//case  E_INTER_WATER_COUNT, E_INTER_WATER_THEATRE: // z niewiadomych przyczyn nie dzia³a case E_INTER_WATER_MENU || E_INTER_WATER_COUNT:
-		//	Display_Water.Theatre();
-		//	break;
+		case E_INTER_THROW_MENU: case E_INTER_THROW_COUNT: case E_INTER_THROW_THEATRE:
+			Display_Throw.Theatre();
+			break;
 
 
 		default:

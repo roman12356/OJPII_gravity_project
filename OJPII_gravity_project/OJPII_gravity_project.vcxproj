@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Display_Main.h" />
+    <ClInclude Include="Display_Throw.h" />
     <ClInclude Include="Display_Water.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Header.h" />
